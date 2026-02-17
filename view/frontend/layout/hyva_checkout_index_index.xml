@@ -12,7 +12,13 @@
     <body>
         <referenceContainer name="checkout.payment.methods.after">
             <block name="einvoicing-fields"
-                   template="Geissweb_ElectronicInvoicingAttributes::checkout/einvoicing-fields.phtml"/>
+                   template="Geissweb_ElectronicInvoicingAttributes::checkout/einvoicing-fields.phtml">
+                <arguments>
+                    <argument name="magewire" xsi:type="object">
+                        Geissweb\ElectronicInvoicingAttributes\Magewire\Checkout\EInvoicingFields
+                    </argument>
+                </arguments>
+            </block>
         </referenceContainer>
     </body>
 </page>
