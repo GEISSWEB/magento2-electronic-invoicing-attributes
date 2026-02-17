@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Remove Luma block (loaded via customer_account_edit.xml) -->
+        <referenceBlock name="einvoicing.customer.attributes" remove="true"/>
+
+        <!-- Add Hyva block with Hyva template -->
+        <referenceContainer name="form.additional.info">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="einvoicing.customer.attributes.hyva"
+                   template="Geissweb_ElectronicInvoicingAttributes::customer/form/einvoicing-attributes-hyva.phtml">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">
+                        Geissweb\ElectronicInvoicingAttributes\ViewModel\Customer\EInvoicingAttributes
+                    </argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

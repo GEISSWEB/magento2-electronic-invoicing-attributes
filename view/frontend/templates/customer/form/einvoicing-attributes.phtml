@@ -1,0 +1,60 @@
+<?php declare(strict_types=1);
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+
+use Geissweb\ElectronicInvoicingAttributes\ViewModel\Customer\EInvoicingAttributes;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var EInvoicingAttributes $viewModel */
+$viewModel = $block->getData('view_model');
+?>
+
+<fieldset class="fieldset einvoicing-info">
+    <legend class="legend">
+        <span><?= $escaper->escapeHtml(__('E-Invoicing Information')) ?></span>
+    </legend>
+    <br>
+
+    <div class="field buyer-reference">
+        <label class="label" for="buyer_reference">
+            <span><?= $escaper->escapeHtml(__('Buyer Reference')) ?></span>
+        </label>
+        <div class="control">
+            <input type="text"
+                   name="buyer_reference"
+                   id="buyer_reference"
+                   value="<?= $escaper->escapeHtmlAttr($viewModel->getBuyerReference()) ?>"
+                   title="<?= $escaper->escapeHtmlAttr(__('Buyer Reference')) ?>"
+                   class="input-text"
+                   autocomplete="off">
+            <div class="note">
+                <?= $escaper->escapeHtml(__('For German public sector invoicing, enter your Leitweg-ID')) ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="field buyer-registration">
+        <label class="label" for="buyer_registration">
+            <span><?= $escaper->escapeHtml(__('Company Registration')) ?></span>
+        </label>
+        <div class="control">
+            <input type="text"
+                   name="buyer_registration"
+                   id="buyer_registration"
+                   value="<?= $escaper->escapeHtmlAttr($viewModel->getBuyerRegistration()) ?>"
+                   title="<?= $escaper->escapeHtmlAttr(__('Company Registration')) ?>"
+                   class="input-text"
+                   autocomplete="off">
+            <div class="note">
+                <?= $escaper->escapeHtml(__('Your company registration number (e.g., HRB 12345, SIREN)')) ?>
+            </div>
+        </div>
+    </div>
+</fieldset>

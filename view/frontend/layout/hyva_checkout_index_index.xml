@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="checkout.payment.methods.after">
+            <block name="einvoicing-fields"
+                   template="Geissweb_ElectronicInvoicingAttributes::checkout/einvoicing-fields.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

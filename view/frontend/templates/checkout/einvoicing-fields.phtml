@@ -1,0 +1,176 @@
+<?php declare(strict_types=1);
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Geissweb\ElectronicInvoicingAttributes\ViewModel\Checkout\EInvoicingFields as EInvoicingFieldsViewModel;
+
+/** @var Escaper $escaper */
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var EInvoicingFieldsViewModel $viewModel */
+$viewModel = $viewModels->require(EInvoicingFieldsViewModel::class);
+$customerHasBuyerReference = $viewModel->customerHasBuyerReference();
+$initialBuyerReference = $viewModel->getInitialBuyerReference();
+$initialProjectReference = $viewModel->getInitialProjectReference();
+?>
+<div x-data="initEInvoicingFields()"
+     x-init="init('<?= $escaper->escapeJs($initialBuyerReference) ?>', '<?= $escaper->escapeJs($initialProjectReference) ?>')"
+     class="einvoicing-fields-container mt-6 mb-4">
+
+    <div class="step-title mb-4">
+        <h3 class="text-lg font-medium text-gray-900">
+            <?= $escaper->escapeHtml(__('E-Invoicing Information')) ?>
+        </h3>
+    </div>
+
+    <div class="einvoicing-fieldset space-y-4">
+        <?php if (!$customerHasBuyerReference): ?>
+        <!-- Buyer Reference Field - only shown if customer doesn't have it in their account -->
+        <div class="field buyer-reference">
+            <label class="label block text-sm font-medium text-gray-700 mb-1"
+                   for="einvoicing-buyer-reference">
+                <span><?= $escaper->escapeHtml(__('Buyer Reference')) ?></span>
+            </label>
+            <div class="control">
+                <input type="text"
+                       id="einvoicing-buyer-reference"
+                       name="einvoicing_buyer_reference"
+                       x-model="buyerReference"
+                       @input.debounce.500ms="saveBuyerReference"
+                       class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                       placeholder=""
+                       autocomplete="off"/>
+                <p class="note text-xs text-gray-500 mt-1">
+                    <?= $escaper->escapeHtml(__('For German public sector invoicing, enter your Leitweg-ID')) ?>
+                </p>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Project Reference Field - always shown -->
+        <div class="field project-reference">
+            <label class="label block text-sm font-medium text-gray-700 mb-1"
+                   for="einvoicing-project-reference">
+                <span><?= $escaper->escapeHtml(__('Project Reference')) ?></span>
+            </label>
+            <div class="control">
+                <input type="text"
+                       id="einvoicing-project-reference"
+                       name="einvoicing_project_reference"
+                       x-model="projectReference"
+                       @input.debounce.500ms="saveProjectReference"
+                       class="form-input w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
+                       placeholder=""
+                       autocomplete="off"/>
+                <p class="note text-xs text-gray-500 mt-1">
+                    <?= $escaper->escapeHtml(__('Optional project or contract reference for the invoice')) ?>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function initEInvoicingFields() {
+    return {
+        buyerReference: '',
+        projectReference: '',
+        cartId: null,
+        isGuest: true,
+
+        init(initialBuyerRef, initialProjectRef) {
+            this.buyerReference = initialBuyerRef || '';
+            this.projectReference = initialProjectRef || '';
+
+            // Get cart ID and customer status
+            this.cartId = window.checkout?.quote?.entity_id || null;
+            this.isGuest = !window.isCustomerLoggedIn;
+
+            // Load initial data from quote
+            if (this.cartId) {
+                this.loadFromQuote();
+            }
+        },
+
+        async loadFromQuote() {
+            if (!this.cartId) {
+                return;
+            }
+
+            try {
+                const url = this.isGuest
+                    ? `/rest/default/V1/guest-carts/${this.cartId}/einvoicing`
+                    : '/rest/default/V1/carts/mine/einvoicing';
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data) {
+                        if (data.buyer_reference && !this.buyerReference) {
+                            this.buyerReference = data.buyer_reference;
+                        }
+                        if (data.project_reference && !this.projectReference) {
+                            this.projectReference = data.project_reference;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading e-invoicing data:', error);
+            }
+        },
+
+        async saveData() {
+            if (!this.cartId) {
+                return;
+            }
+
+            try {
+                const url = this.isGuest
+                    ? `/rest/default/V1/guest-carts/${this.cartId}/einvoicing`
+                    : '/rest/default/V1/carts/mine/einvoicing';
+
+                const payload = {
+                    buyerReference: this.buyerReference || null,
+                    projectReference: this.projectReference || null
+                };
+
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.error('Error saving e-invoicing data:', error);
+            }
+        },
+
+        saveBuyerReference() {
+            this.saveData();
+        },
+
+        saveProjectReference() {
+            this.saveData();
+        }
+    }
+}
+</script>

@@ -1,0 +1,42 @@
+<?php declare(strict_types=1);
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+
+use Geissweb\ElectronicInvoicingAttributes\Block\Adminhtml\Order\View\EInvoicing;
+
+/** @var EInvoicing $block */
+
+if (!$block->hasEInvoicingData()) {
+    return;
+}
+
+$buyerReference = $block->getBuyerReference();
+$projectReference = $block->getProjectReference();
+?>
+<section class="admin__page-section">
+    <div class="admin__page-section-title">
+        <span class="title"><?= $block->escapeHtml(__('E-Invoicing Information')) ?></span>
+    </div>
+    <div class="admin__page-section-content">
+        <div class="admin__page-section-item order-einvoicing-data">
+            <table class="admin__table-secondary">
+                <?php if ($buyerReference): ?>
+                <tr>
+                    <th><?= $block->escapeHtml(__('Buyer Reference (BT-10)')) ?></th>
+                    <td><?= $block->escapeHtml($buyerReference) ?></td>
+                </tr>
+                <?php endif; ?>
+                <?php if ($projectReference): ?>
+                <tr>
+                    <th><?= $block->escapeHtml(__('Project Reference (BT-11)')) ?></th>
+                    <td><?= $block->escapeHtml($projectReference) ?></td>
+                </tr>
+                <?php endif; ?>
+            </table>
+        </div>
+    </div>
+</section>

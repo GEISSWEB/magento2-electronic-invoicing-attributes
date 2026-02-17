@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
+    <extension_attributes for="Magento\Sales\Api\Data\OrderInterface">
+        <attribute code="einvoicing_buyer_reference" type="string"/>
+        <attribute code="einvoicing_project_reference" type="string"/>
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Quote\Api\Data\CartInterface">
+        <attribute code="einvoicing_buyer_reference" type="string"/>
+        <attribute code="einvoicing_project_reference" type="string"/>
+    </extension_attributes>
+</config>

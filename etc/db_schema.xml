@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="geissweb_einvoicing_order" resource="default" engine="innodb"
+           comment="Electronic Invoicing Order Extension Data">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="int" name="order_id" unsigned="true" nullable="false"
+                comment="Order ID"/>
+        <column xsi:type="varchar" name="buyer_reference" length="255" nullable="true"
+                comment="Buyer Reference (BT-10)"/>
+        <column xsi:type="varchar" name="project_reference" length="255" nullable="true"
+                comment="Project Reference (BT-11)"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="GEISSWEB_EINVOICING_ORDER_ORDER_ID">
+            <column name="order_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="GEISSWEB_EINVOICING_ORDER_ORDER_ID_SALES_ORDER_ENTITY_ID"
+                    table="geissweb_einvoicing_order" column="order_id"
+                    referenceTable="sales_order" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+
+    <table name="geissweb_einvoicing_quote" resource="default" engine="innodb"
+           comment="Electronic Invoicing Quote Extension Data">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="int" name="quote_id" unsigned="true" nullable="false"
+                comment="Quote ID"/>
+        <column xsi:type="varchar" name="buyer_reference" length="255" nullable="true"
+                comment="Buyer Reference (BT-10)"/>
+        <column xsi:type="varchar" name="project_reference" length="255" nullable="true"
+                comment="Project Reference (BT-11)"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="GEISSWEB_EINVOICING_QUOTE_QUOTE_ID">
+            <column name="quote_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="GEISSWEB_EINVOICING_QUOTE_QUOTE_ID_QUOTE_ENTITY_ID"
+                    table="geissweb_einvoicing_quote" column="quote_id"
+                    referenceTable="quote" referenceColumn="entity_id" onDelete="CASCADE"/>
+    </table>
+</schema>

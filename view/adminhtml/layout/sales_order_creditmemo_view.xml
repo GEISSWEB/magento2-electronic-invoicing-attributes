@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="extra_customer_info">
+            <block class="Geissweb\ElectronicInvoicingAttributes\Block\Adminhtml\Order\View\EInvoicing"
+                   name="order_einvoicing_info"
+                   template="Geissweb_ElectronicInvoicingAttributes::order/view/einvoicing-rows.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <!-- Customer Cart E-Invoicing Data -->
+    <route url="/V1/carts/mine/einvoicing" method="GET">
+        <service class="Geissweb\ElectronicInvoicingAttributes\Api\CartEInvoicingManagementInterface" method="get"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <route url="/V1/carts/mine/einvoicing" method="POST">
+        <service class="Geissweb\ElectronicInvoicingAttributes\Api\CartEInvoicingManagementInterface" method="save"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="cartId" force="true">%cart_id%</parameter>
+        </data>
+    </route>
+
+    <!-- Guest Cart E-Invoicing Data -->
+    <route url="/V1/guest-carts/:cartId/einvoicing" method="GET">
+        <service class="Geissweb\ElectronicInvoicingAttributes\Api\GuestCartEInvoicingManagementInterface" method="get"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route url="/V1/guest-carts/:cartId/einvoicing" method="POST">
+        <service class="Geissweb\ElectronicInvoicingAttributes\Api\GuestCartEInvoicingManagementInterface" method="save"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+</routes>

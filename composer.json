@@ -1,0 +1,48 @@
+{
+    "name": "geissweb/module-electronic-invoicing-attributes",
+    "description": "Customer and Order attributes for electronic invoicing (EN16931/XRechnung/ZUGFeRD)",
+    "type": "magento2-module",
+    "license": "PolyForm-Noncommercial-1.0.0",
+    "version": "1.0.0",
+    "keywords": [
+        "magento2",
+        "e-invoicing",
+        "electronic-invoicing",
+        "en16931",
+        "xrechnung",
+        "zugferd",
+        "factur-x",
+        "leitweg-id",
+        "peppol",
+        "b2b",
+        "b2g",
+        "hyva"
+    ],
+    "homepage": "https://github.com/geissweb/module-electronic-invoicing-attributes",
+    "authors": [
+        {
+            "name": "GEISS Weblösungen",
+            "email": "info@geissweb.de",
+            "homepage": "https://www.geissweb.de"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/geissweb/module-electronic-invoicing-attributes/issues",
+        "source": "https://github.com/geissweb/module-electronic-invoicing-attributes"
+    },
+    "require": {
+        "php": "^8.1",
+        "magento/framework": "*",
+        "magento/module-customer": "*",
+        "magento/module-sales": "*",
+        "magento/module-eav": "*"
+    },
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Geissweb\\ElectronicInvoicingAttributes\\": ""
+        }
+    }
+}

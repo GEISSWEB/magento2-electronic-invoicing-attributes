@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Interface Preferences -->
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\Data\OrderEInvoicingInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\OrderEInvoicing"/>
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\OrderEInvoicingRepositoryInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\OrderEInvoicingRepository"/>
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\Data\QuoteEInvoicingInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\QuoteEInvoicing"/>
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\QuoteEInvoicingRepositoryInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\QuoteEInvoicingRepository"/>
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\CartEInvoicingManagementInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\CartEInvoicingManagement"/>
+    <preference for="Geissweb\ElectronicInvoicingAttributes\Api\GuestCartEInvoicingManagementInterface"
+                type="Geissweb\ElectronicInvoicingAttributes\Model\GuestCartEInvoicingManagement"/>
+
+    <!-- Order Repository Plugin for Extension Attributes -->
+    <type name="Magento\Sales\Api\OrderRepositoryInterface">
+        <plugin name="geissweb_einvoicing_order_extension_attributes"
+                type="Geissweb\ElectronicInvoicingAttributes\Plugin\Order\OrderRepositoryPlugin"
+                sortOrder="10"/>
+    </type>
+
+    <!-- Quote Repository Plugin for Extension Attributes -->
+    <type name="Magento\Quote\Api\CartRepositoryInterface">
+        <plugin name="geissweb_einvoicing_quote_extension_attributes"
+                type="Geissweb\ElectronicInvoicingAttributes\Plugin\Quote\CartRepositoryPlugin"
+                sortOrder="10"/>
+    </type>
+
+    <!-- Copy Quote to Order on Order Placement -->
+    <type name="Magento\Quote\Model\QuoteManagement">
+        <plugin name="geissweb_einvoicing_quote_to_order"
+                type="Geissweb\ElectronicInvoicingAttributes\Plugin\Quote\QuoteManagementPlugin"
+                sortOrder="10"/>
+    </type>
+
+</config>

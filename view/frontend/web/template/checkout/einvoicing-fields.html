@@ -1,0 +1,50 @@
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<div class="payment-option _collapsible opc-payment-additional einvoicing-info"
+     data-bind="visible: isVisible, mageInit: {'collapsible':{'openedState': '_active'}}">
+    <div class="payment-option-title field choice" data-role="title">
+        <span class="action action-toggle" id="block-einvoicing-heading" role="heading" aria-level="2">
+            <!-- ko i18n: 'E-Invoicing Information'--><!-- /ko -->
+        </span>
+    </div>
+    <div class="payment-option-content" data-role="content">
+        <div class="payment-option-inner">
+            <!-- ko if: showBuyerReference -->
+            <div class="field">
+                <label class="label" for="einvoicing-buyer-reference">
+                    <span data-bind="i18n: 'Buyer Reference'"></span>
+                </label>
+                <div class="control">
+                    <input type="text"
+                           id="einvoicing-buyer-reference"
+                           name="einvoicing_buyer_reference"
+                           class="input-text"
+                           data-bind="value: buyerReference, valueUpdate: 'afterkeydown'"
+                           autocomplete="off"/>
+                </div>
+                <span class="note" data-bind="i18n: 'For German public sector invoicing, enter your Leitweg-ID'"></span>
+            </div>
+            <!-- /ko -->
+            <div class="field">
+                <label class="label" for="einvoicing-project-reference">
+                    <span data-bind="i18n: 'Project Reference'"></span>
+                </label>
+                <div class="control">
+                    <input type="text"
+                           id="einvoicing-project-reference"
+                           name="einvoicing_project_reference"
+                           class="input-text"
+                           data-bind="value: projectReference, valueUpdate: 'afterkeydown'"
+                           autocomplete="off"/>
+                </div>
+                <span class="note" data-bind="i18n: 'Optional project or contract reference for the invoice'"></span>
+            </div>
+        </div>
+    </div>
+</div>

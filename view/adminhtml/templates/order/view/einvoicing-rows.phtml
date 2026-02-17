@@ -1,0 +1,33 @@
+<?php declare(strict_types=1);
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * Template for displaying e-invoicing data as table rows within Account Information section.
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+
+use Geissweb\ElectronicInvoicingAttributes\Block\Adminhtml\Order\View\EInvoicing;
+
+/** @var EInvoicing $block */
+
+if (!$block->hasEInvoicingData()) {
+    return;
+}
+
+$buyerReference = $block->getBuyerReference();
+$projectReference = $block->getProjectReference();
+?>
+<?php if ($buyerReference): ?>
+<tr>
+    <th><?= $block->escapeHtml(__('Buyer Reference (BT-10)')) ?></th>
+    <td><?= $block->escapeHtml($buyerReference) ?></td>
+</tr>
+<?php endif; ?>
+<?php if ($projectReference): ?>
+<tr>
+    <th><?= $block->escapeHtml(__('Project Reference (BT-11)')) ?></th>
+    <td><?= $block->escapeHtml($projectReference) ?></td>
+</tr>
+<?php endif; ?>
