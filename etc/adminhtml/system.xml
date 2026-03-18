@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="electronicinvoicing">
+            <group id="checkout_fields" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Checkout Fields</label>
+                <field id="buyer_reference_enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Buyer Reference Field</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show Buyer Reference field during checkout.</comment>
+                </field>
+                <field id="buyer_reference_tooltip" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Buyer Reference Tooltip</label>
+                    <depends>
+                        <field id="buyer_reference_enabled">1</field>
+                    </depends>
+                </field>
+                <field id="project_reference_enabled" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Project Reference Field</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Show Project Reference field during checkout.</comment>
+                </field>
+                <field id="project_reference_tooltip" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Project Reference Tooltip</label>
+                    <depends>
+                        <field id="project_reference_enabled">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

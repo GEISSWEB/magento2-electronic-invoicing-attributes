@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * ||GEISSWEB| Electronic Invoicing Attributes
+ *
+ * @copyright   Copyright (c) 2025 GEISS Weblösungen (https://www.geissweb.de)
+ * @license     PolyForm-Noncommercial-1.0.0
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <electronicinvoicing>
+            <checkout_fields>
+                <buyer_reference_enabled>1</buyer_reference_enabled>
+                <buyer_reference_tooltip>For German public sector invoicing, enter your Leitweg-ID</buyer_reference_tooltip>
+                <project_reference_enabled>1</project_reference_enabled>
+                <project_reference_tooltip>Optional project or contract reference for the invoice</project_reference_tooltip>
+            </checkout_fields>
+        </electronicinvoicing>
+    </default>
+</config>
