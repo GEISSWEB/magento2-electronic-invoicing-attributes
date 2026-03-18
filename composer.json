@@ -37,6 +37,9 @@
         "magento/module-sales": "*",
         "magento/module-eav": "*"
     },
+    "suggest": {
+        "geissweb/module-electronic-invoicing-attributes-hyva-checkout": "Required for Hyvä Checkout compatibility"
+    },
     "autoload": {
         "files": [
             "registration.php"
