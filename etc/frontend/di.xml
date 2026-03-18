@@ -9,12 +9,8 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-
-    <!-- Checkout Layout Processor for E-Invoicing Fields -->
     <type name="Magento\Checkout\Block\Checkout\LayoutProcessor">
-        <plugin name="geissweb_einvoicing_checkout_layout_processor"
-                type="Geissweb\ElectronicInvoicingAttributes\Plugin\Checkout\LayoutProcessorPlugin"
-                sortOrder="100"/>
+        <plugin name="geissweb_einvoicing_checkout_fields_config"
+                type="Geissweb\ElectronicInvoicingAttributes\Plugin\Checkout\LayoutProcessorPlugin"/>
     </type>
-
 </config>

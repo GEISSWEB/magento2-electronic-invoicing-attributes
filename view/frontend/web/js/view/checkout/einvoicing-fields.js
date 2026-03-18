@@ -11,30 +11,40 @@ define([
     'Magento_Checkout/js/model/quote',
     'Magento_Customer/js/model/customer',
     'mage/storage',
-    'Magento_Checkout/js/model/url-builder'
-], function (Component, ko, quote, customer, storage, urlBuilder) {
+    'Magento_Checkout/js/model/url-builder',
+    'mage/translate'
+], function (Component, ko, quote, customer, storage, urlBuilder, $t) {
     'use strict';
 
     return Component.extend({
         defaults: {
             template: 'Geissweb_ElectronicInvoicingAttributes/checkout/einvoicing-fields',
-            customerHasBuyerReference: false
+            isBuyerReferenceEnabled: true,
+            buyerReferenceTooltip: '',
+            isProjectReferenceEnabled: true,
+            projectReferenceTooltip: ''
         },
 
         buyerReference: ko.observable(''),
         projectReference: ko.observable(''),
         isVisible: ko.observable(true),
-        showBuyerReference: ko.observable(true),
+        isBuyerReferenceVisible: ko.observable(true),
+        isProjectReferenceVisible: ko.observable(true),
 
         /**
-         * Initialize component
-         *
          * @returns {Object}
          */
         initialize: function () {
             this._super();
 
-            this.showBuyerReference(!this.customerHasBuyerReference);
+            this.isBuyerReferenceVisible(this.isBuyerReferenceEnabled);
+            this.isProjectReferenceVisible(this.isProjectReferenceEnabled);
+            this.isVisible(this.isBuyerReferenceEnabled || this.isProjectReferenceEnabled);
+
+            if (!this.isBuyerReferenceEnabled && !this.isProjectReferenceEnabled) {
+                return this;
+            }
+
             this.loadInitialData();
             this.subscribeToChanges();
 
@@ -122,12 +132,10 @@ define([
         },
 
         /**
-         * Get fieldset title
-         *
          * @returns {String}
          */
         getTitle: function () {
-            return 'E-Invoicing Information';
+            return $t('E-Invoicing Information');
         }
     });
 });

@@ -14,36 +14,50 @@
         </span>
     </div>
     <div class="payment-option-content" data-role="content">
-        <div class="payment-option-inner">
-            <!-- ko if: showBuyerReference -->
-            <div class="field">
+        <div class="payment-option-inner fieldset">
+            <div class="field" data-bind="visible: isBuyerReferenceVisible">
                 <label class="label" for="einvoicing-buyer-reference">
-                    <span data-bind="i18n: 'Buyer Reference'"></span>
+                    <span data-bind="i18n: 'Buyer Reference'">Buyer Reference</span>
                 </label>
-                <div class="control">
+                <div class="control _with-tooltip">
                     <input type="text"
                            id="einvoicing-buyer-reference"
                            name="einvoicing_buyer_reference"
                            class="input-text"
                            data-bind="value: buyerReference, valueUpdate: 'afterkeydown'"
                            autocomplete="off"/>
+                    <div class="field-tooltip toggle">
+                        <span class="field-tooltip-action action-help"
+                              tabindex="0"
+                              data-toggle="dropdown"
+                              data-bind="mageInit: {'dropdown':{'activeClass': '_active', 'parent': '.field-tooltip.toggle'}}"></span>
+                        <div class="field-tooltip-content"
+                             data-target="dropdown"
+                             data-bind="text: buyerReferenceTooltip"></div>
+                    </div>
                 </div>
-                <span class="note" data-bind="i18n: 'For German public sector invoicing, enter your Leitweg-ID'"></span>
             </div>
-            <!-- /ko -->
-            <div class="field">
+            <div class="field" data-bind="visible: isProjectReferenceVisible">
                 <label class="label" for="einvoicing-project-reference">
-                    <span data-bind="i18n: 'Project Reference'"></span>
+                    <span data-bind="i18n: 'Project Reference'">Project Reference</span>
                 </label>
-                <div class="control">
+                <div class="control _with-tooltip">
                     <input type="text"
                            id="einvoicing-project-reference"
                            name="einvoicing_project_reference"
                            class="input-text"
                            data-bind="value: projectReference, valueUpdate: 'afterkeydown'"
                            autocomplete="off"/>
+                    <div class="field-tooltip toggle">
+                        <span class="field-tooltip-action action-help"
+                              tabindex="0"
+                              data-toggle="dropdown"
+                              data-bind="mageInit: {'dropdown':{'activeClass': '_active', 'parent': '.field-tooltip.toggle'}}"></span>
+                        <div class="field-tooltip-content"
+                             data-target="dropdown"
+                             data-bind="text: projectReferenceTooltip"></div>
+                    </div>
                 </div>
-                <span class="note" data-bind="i18n: 'Optional project or contract reference for the invoice'"></span>
             </div>
         </div>
     </div>
