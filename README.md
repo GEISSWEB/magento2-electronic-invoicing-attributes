@@ -4,7 +4,7 @@ A Magento 2 module that adds customer and order attributes for electronic invoic
 
 ## Overview
 
-This module extends Magento 2 with essential fields for B2B and B2G electronic invoicing in Europe. It enables customers to store their buyer reference (Leitweg-ID) and company registration number, which are required for generating compliant electronic invoices.
+This module extends Magento 2 with essential fields for B2B and B2G electronic invoicing in Europe. It enables customers to store their buyer reference (Leitweg-ID) and company registration number, and provides configurable checkout fields for capturing invoicing data at order placement.
 
 **Perfect for:**
 - German public sector invoicing (XRechnung with Leitweg-ID)
@@ -17,18 +17,28 @@ This module extends Magento 2 with essential fields for B2B and B2G electronic i
 - **Buyer Reference** (`buyer_reference`) - Stores the buyer's routing identifier (Leitweg-ID, cost center, etc.) - Maps to EN16931 BT-10
 - **Company Registration** (`buyer_registration`) - Stores the legal registration identifier (HRB, SIREN, etc.) - Maps to EN16931 BT-47
 
+### Checkout Fields
+- **Buyer Reference** and **Project Reference** fields in the checkout payment step
+- Each field individually configurable (enable/disable per Store View)
+- Configurable tooltip text per field via admin
+- Auto-save to quote via REST API (Luma) or Magewire (Hyvä Checkout)
+- Pre-populates buyer reference from customer attribute for logged-in customers
+- Luma: Magento-standard `field-tooltip toggle` dropdown pattern
+- Hyvä: `title` attribute on input fields
+
 ### Order Extension Attributes
-- `einvoicing_buyer_reference` - Captured from customer at order placement
+- `einvoicing_buyer_reference` - Captured from checkout at order placement
 - `einvoicing_project_reference` - Optional project reference for invoicing
 
 ### Admin Integration
 - Customer form fieldset "E-Invoicing" in admin customer edit
+- E-Invoicing data displayed on order view, invoice view, and credit memo view
 - Attributes visible and editable by administrators
 
 ### Frontend Integration
 - Customer account edit form with E-Invoicing fieldset
-- **Dual theme support:** Works with both Luma and Hyva themes out of the box
-- Automatic form validation
+- Checkout payment step with collapsible E-Invoicing section
+- **Dual theme support:** Works with both Luma and Hyvä themes out of the box
 
 ## Requirements
 
@@ -59,16 +69,30 @@ bin/magento cache:flush
 
 ## Configuration
 
-No configuration required. The module works out of the box after installation.
+Navigate to **Stores > Configuration > Electronic Invoicing > Checkout Fields**:
+
+| Config Path | Type | Default | Scope |
+|---|---|---|---|
+| `buyer_reference_enabled` | Yes/No | Yes | Store View |
+| `buyer_reference_tooltip` | Text | `For German public sector invoicing, enter your Leitweg-ID` | Store View |
+| `project_reference_enabled` | Yes/No | Yes | Store View |
+| `project_reference_tooltip` | Text | `Optional project or contract reference for the invoice` | Store View |
+
+- Disable a field to hide it from checkout
+- Both fields disabled: entire E-Invoicing section is hidden, no API calls made
+- Tooltip text appears as a help icon dropdown (Luma) or `title` attribute (Hyvä)
 
 ## Usage
 
 ### For Customers
 
-After installation, customers will see an "E-Invoicing Information" section on their account edit page (`/customer/account/edit/`):
-
+**Account page** (`/customer/account/edit/`):
 - **Buyer Reference**: Enter your Leitweg-ID (for German public sector) or other routing identifier
 - **Company Registration**: Enter your company registration number (HRB, SIREN, etc.)
+
+**Checkout** (payment step):
+- **Buyer Reference**: Pre-populated from customer attribute if available
+- **Project Reference**: Optional reference for the invoice
 
 ### For Developers
 
@@ -99,6 +123,33 @@ $buyerReference = $extensionAttributes->getEinvoicingBuyerReference();
 $projectReference = $extensionAttributes->getEinvoicingProjectReference();
 ```
 
+## REST API
+
+### Customer Cart
+
+```
+GET  /V1/carts/mine/einvoicing          # Get e-invoicing data for current cart
+POST /V1/carts/mine/einvoicing          # Save e-invoicing data to current cart
+```
+Authentication: Customer token (resource: `self`)
+
+### Guest Cart
+
+```
+GET  /V1/guest-carts/:cartId/einvoicing # Get e-invoicing data for guest cart
+POST /V1/guest-carts/:cartId/einvoicing # Save e-invoicing data to guest cart
+```
+Authentication: Anonymous (masked cart ID required)
+
+### Payload
+
+```json
+{
+    "buyerReference": "04011000-1234512345-06",
+    "projectReference": "PROJECT-2025-001"
+}
+```
+
 ## EN16931 Compliance
 
 This module provides data fields that map to EN16931 business terms:
@@ -113,25 +164,39 @@ These fields are essential for generating compliant electronic invoices in forma
 - ZUGFeRD/Factur-X
 - PEPPOL BIS Billing
 
-## Hyva Theme Support
+## Hyvä Theme Support
 
-This module includes native Hyva theme support using the `hyva_customer_account_edit` layout handle. No additional configuration or compatibility modules are required.
+### Customer Account
 
-**How it works:**
-- Luma themes use `customer_account_edit.xml` with standard LESS styling
-- Hyva themes automatically load `hyva_customer_account_edit.xml` with Tailwind CSS and Alpine.js
+Native Hyvä theme support using the `hyva_customer_account_edit` layout handle with Tailwind CSS styling. No additional modules required.
+
+### Hyvä Checkout
+
+For Hyvä Checkout support, install the companion module:
+
+```bash
+composer require geissweb/module-electronic-invoicing-attributes-hyva-checkout
+bin/magento module:enable Geissweb_ElectronicInvoicingAttributesHyvaCheckout
+bin/magento setup:upgrade
+bin/magento cache:flush
+```
+
+This module provides a Magewire component (`EInvoicingFields`) that integrates the e-invoicing fields into the Hyvä Checkout payment step with real-time data persistence.
 
 ## Database Schema
 
 The module creates:
-- Customer EAV attributes in `eav_attribute` table
+- Customer EAV attributes (`buyer_reference`, `buyer_registration`) in `eav_attribute` table
 - Order extension data in `geissweb_einvoicing_order` table
+- Quote extension data in `geissweb_einvoicing_quote` table
+
+Both extension tables store `buyer_reference` and `project_reference` with foreign keys to their respective parent tables (cascade delete).
 
 ## Testing
 
 Run unit tests:
 ```bash
-vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist vendor/geissweb/module-electronic-invoicing-attributes/Test/Unit
+vendor/bin/phpunit -c dev/tests/unit/phpunit.xml.dist path/to/Geissweb_ElectronicInvoicingAttributes/Test/Unit
 ```
 
 ## Contributing
@@ -155,8 +220,5 @@ This software is licensed under the [PolyForm Noncommercial License 1.0.0](LICEN
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/geissweb/magento2-electronic-invoicing-attributes/issues)
-- **Documentation**: [GEISSWEB](https://www.geissweb.de)
+- **Documentation**: [GEISSWEB](https://geissweb.com)
 
-## Credits
-
-Developed by [GEISS Weblösungen](https://www.geissweb.de) - Magento 2 Extension Provider since 2009.

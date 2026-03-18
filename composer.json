@@ -3,7 +3,7 @@
     "description": "Customer and Order attributes for electronic invoicing (EN16931/XRechnung/ZUGFeRD)",
     "type": "magento2-module",
     "license": "PolyForm-Noncommercial-1.0.0",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "keywords": [
         "magento2",
         "e-invoicing",
