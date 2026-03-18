@@ -13,8 +13,11 @@ namespace Geissweb\ElectronicInvoicingAttributes\Model;
 use Geissweb\ElectronicInvoicingAttributes\Api\CartEInvoicingManagementInterface;
 use Geissweb\ElectronicInvoicingAttributes\Api\Data\QuoteEInvoicingInterface;
 use Geissweb\ElectronicInvoicingAttributes\Api\QuoteEInvoicingRepositoryInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Api\Data\CartInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -22,10 +25,18 @@ use Psr\Log\LoggerInterface;
  */
 class CartEInvoicingManagement implements CartEInvoicingManagementInterface
 {
+    /**
+     * @param CartRepositoryInterface $cartRepository
+     * @param QuoteEInvoicingRepositoryInterface $quoteEInvoicingRepository
+     * @param QuoteEInvoicingFactory $quoteEInvoicingFactory
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param LoggerInterface $logger
+     */
     public function __construct(
         private readonly CartRepositoryInterface $cartRepository,
         private readonly QuoteEInvoicingRepositoryInterface $quoteEInvoicingRepository,
         private readonly QuoteEInvoicingFactory $quoteEInvoicingFactory,
+        private readonly CustomerRepositoryInterface $customerRepository,
         private readonly LoggerInterface $logger
     ) {
     }
@@ -37,14 +48,49 @@ class CartEInvoicingManagement implements CartEInvoicingManagementInterface
     {
         try {
             $quote = $this->cartRepository->get($cartId);
+            $quoteEInvoicing = $this->quoteEInvoicingRepository->getByQuoteId((int)$quote->getId());
 
-            return $this->quoteEInvoicingRepository->getByQuoteId((int)$quote->getId());
+            if ($quoteEInvoicing !== null) {
+                return $quoteEInvoicing;
+            }
+
+            return $this->createPrefilledFromCustomer($quote);
         } catch (LocalizedException $e) {
             $this->logger->error(
                 'Failed to get e-invoicing data for cart',
                 ['cart_id' => $cartId, 'exception' => $e->getMessage()]
             );
 
+            return null;
+        }
+    }
+
+    /**
+     * @param CartInterface $quote
+     * @return QuoteEInvoicingInterface|null
+     */
+    private function createPrefilledFromCustomer(CartInterface $quote): ?QuoteEInvoicingInterface
+    {
+        $customer = $quote->getCustomer();
+        $customerId = $customer->getId();
+
+        if ($customerId === null) {
+            return null;
+        }
+
+        try {
+            $customer = $this->customerRepository->getById((int)$customerId);
+            $attribute = $customer->getCustomAttribute('buyer_reference');
+
+            if ($attribute === null || $attribute->getValue() === '' || $attribute->getValue() === null) {
+                return null;
+            }
+
+            $prefilled = $this->quoteEInvoicingFactory->create();
+            $prefilled->setBuyerReference((string)$attribute->getValue());
+
+            return $prefilled;
+        } catch (NoSuchEntityException) {
             return null;
         }
     }
