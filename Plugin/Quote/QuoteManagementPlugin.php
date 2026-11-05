@@ -16,7 +16,7 @@ use Geissweb\ElectronicInvoicingAttributes\Model\OrderEInvoicingFactory;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Quote\Api\CartRepositoryInterface;
+use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\QuoteManagement;
 use Magento\Sales\Api\Data\OrderInterface;
 use Psr\Log\LoggerInterface;
@@ -27,7 +27,6 @@ use Psr\Log\LoggerInterface;
 class QuoteManagementPlugin
 {
     public function __construct(
-        private readonly CartRepositoryInterface $cartRepository,
         private readonly QuoteEInvoicingRepositoryInterface $quoteEInvoicingRepository,
         private readonly OrderEInvoicingRepositoryInterface $orderEInvoicingRepository,
         private readonly OrderEInvoicingFactory $orderEInvoicingFactory,
@@ -37,27 +36,22 @@ class QuoteManagementPlugin
     }
 
     /**
-     * Copy e-invoicing data from quote to order after order is placed
+     * Copy e-invoicing data from quote to order after the quote is submitted
      *
      * @param QuoteManagement $subject
-     * @param OrderInterface|int $result
-     * @param int $cartId
-     * @return OrderInterface|int
+     * @param OrderInterface|null $result
+     * @param Quote $quote
+     * @return OrderInterface|null
      */
-    public function afterPlaceOrder(QuoteManagement $subject, OrderInterface|int $result, int $cartId): OrderInterface|int
+    public function afterSubmit(QuoteManagement $subject, ?OrderInterface $result, Quote $quote): ?OrderInterface
     {
-        if ($result instanceof OrderInterface) {
-            $orderId = (int)$result->getEntityId();
-        } else {
-            $orderId = (int)$result;
+        if ($result === null) {
+            return null;
         }
 
-        if ($orderId === 0) {
-            return $result;
-        }
+        $orderId = (int)$result->getEntityId();
 
         try {
-            $quote = $this->cartRepository->get($cartId);
             $quoteEInvoicing = $this->quoteEInvoicingRepository->getByQuoteId((int)$quote->getId());
 
             $buyerReference = null;
@@ -85,7 +79,7 @@ class QuoteManagementPlugin
         } catch (LocalizedException $e) {
             $this->logger->error(
                 'Failed to copy e-invoicing data from quote to order',
-                ['cart_id' => $cartId, 'order_id' => $orderId, 'exception' => $e->getMessage()]
+                ['quote_id' => $quote->getId(), 'order_id' => $orderId, 'exception' => $e->getMessage()]
             );
         }
 
